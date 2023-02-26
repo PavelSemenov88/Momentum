@@ -1,10 +1,11 @@
 
-import { sliderUnsplash, sliderGithub } from "./slider.js";
+import { sliderUnsplash, sliderGithub, sliderFlickr } from "./slider.js";
 
 const inputRadio = document.querySelectorAll('input[type=radio]');
 
 const inputRadioGitHub = document.querySelector('input[data-radio=GitHub]');
 export const inputRadioUnsplash = document.querySelector('input[data-radio=Unsplash]');
+const inputRadioFlickr = document.querySelector('input[data-radio=Flickr]');
 
 
 
@@ -21,11 +22,11 @@ export function choosingUploadImages() {
     } else if (localStorage.getItem('uploadImage') === 'Unsplash') {
       sliderUnsplash()
       inputRadioUnsplash.checked = true;
+    } else if (localStorage.getItem('uploadImage') === 'Flickr') {
+      sliderFlickr();
+      inputRadioFlickr.checked = true;
     }
   })
-
-
-
 
   inputRadio.forEach(input => {
     input.addEventListener('click', () => {
@@ -36,6 +37,9 @@ export function choosingUploadImages() {
       } else if (api === 'Unsplash') {
         sliderUnsplash();
         localStorage.setItem('uploadImage', 'Unsplash');
+      } else if (api === 'Flickr') {
+        sliderFlickr();
+        localStorage.setItem('uploadImage', 'Flickr');
       }
     })
   })

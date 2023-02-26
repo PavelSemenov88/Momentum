@@ -2,14 +2,10 @@
 import { showTimeOfDay } from "./greeting.js";
 import { languageArr } from "./languageArr.js";
 
-
-
 const slideNext = document.querySelector('.slide-next');
 const slidePrev = document.querySelector('.slide-prev');
 const body = document.querySelector('body');
 const randomNum = getRandomNum(1, 20);
-
-
 
 function getTimeOfDay() {
   let day = '';
@@ -30,6 +26,41 @@ function getTimeOfDay() {
 
 const dayTime = getTimeOfDay()
 
+async function getLinkToImageFlickr(dayTime) {
+
+  const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=4610bcf02574824bb717ed4b4c80926a&tags=${dayTime}&per_page=1&extras=url_l&format=json&nojsoncallback=1`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  console.log(data.photos.photo[0].url_l);
+  const img = new Image();
+  img.src = data.photos.photo[0].url_l;
+
+  img.onload = () => {
+    body.style.backgroundImage = `url(${img.src})`
+  };
+}
+
+export function sliderFlickr() {
+
+  getLinkToImageFlickr(dayTime)
+
+  slideNext.addEventListener('click', () => {
+    if (localStorage.getItem('uploadImage') === 'Flickr') {
+      getLinkToImageFlickr(dayTime)
+    }
+  });
+
+
+  slidePrev.addEventListener('click', () => {
+    if (localStorage.getItem('uploadImage') === 'Flickr') {
+      getLinkToImageFlickr(dayTime)
+    }
+  });
+}
+
+
 async function getLinkToImageUnsplash(dayTime) {
 
   const url = `https://api.unsplash.com/photos/random?orientation=landscape&query=${dayTime}&client_id=HeAY_8cULGFtdRMUmT-hlVoIG85JxTkSKHKBxCYEJoM`;
@@ -48,9 +79,19 @@ export function sliderUnsplash() {
 
   getLinkToImageUnsplash(dayTime)
 
-  slideNext.addEventListener('click', getLinkToImageUnsplash(dayTime));
 
-  slidePrev.addEventListener('click', getLinkToImageUnsplash(dayTime))
+  slideNext.addEventListener('click', () => {
+    if (localStorage.getItem('uploadImage') === 'Unsplash') {
+      getLinkToImageUnsplash(dayTime)
+    }
+  })
+
+
+  slidePrev.addEventListener('click', () => {
+    if (localStorage.getItem('uploadImage') === 'Unsplash') {
+      getLinkToImageUnsplash(dayTime)
+    }
+  })
 }
 
 function getRandomNum(min, max) {
@@ -92,19 +133,24 @@ export function sliderGithub() {
 
   let random = randomNum;
   let bgNum = random.toString().padStart(2, '0');
+
   getLinkToImageGitHub(dayTime, bgNum);
 
   slideNext.addEventListener('click', () => {
     random = getSlideNext(random);
     bgNum = random.toString().padStart(2, '0');
-    getLinkToImageGitHub(dayTime, bgNum);
+    if (localStorage.getItem('uploadImage') === 'GitHub') {
+      getLinkToImageGitHub(dayTime, bgNum);
+    };
   });
 
   slidePrev.addEventListener('click', () => {
     random = getSlidePrev(random);
     bgNum = random.toString().padStart(2, '0');
-    getLinkToImageGitHub(dayTime, bgNum);
-  })
+    if (localStorage.getItem('uploadImage') === 'GitHub') {
+      getLinkToImageGitHub(dayTime, bgNum);
+    };
+  });
 
 
 }
